@@ -10,8 +10,7 @@ const instance = axios.create({
   },
 });
 
-const DEVELOPER_FORM_ID = 'zisBMS5p';
-const CLIENT_FORM_ID = 'FMR2xj4K';
+const env = process.env;
 
 const queryHandler = (queryParams) => {
   const { textFilter } = queryParams;
@@ -30,28 +29,28 @@ const responseHandler = (response) => response.data.items.map(item => item.answe
 export const getDeveloperResponses = async (queryParams = {}) => {
   try {
     const query = queryHandler(queryParams);
-    const response = await instance.get(`forms/${DEVELOPER_FORM_ID}/responses?completed=true${query.length ? query : ''}`);
+    const response = await instance.get(`forms/${env.DEVELOPER_FORM_ID}/responses?completed=true${query.length ? query : ''}`);
     return responseHandler(response);
   } catch (err) {
-    console.log(err);
+    throw Error(err);
   } 
 };
 
 export const getClientResponses = async (queryParams = {}) => {
   try {
     const query = queryHandler(queryParams);
-    const response = await instance.get(`forms/${CLIENT_FORM_ID}/responses?completed=true${query.length ? query : ''}`);
+    const response = await instance.get(`forms/${env.CLIENT_FORM_ID}/responses?completed=true${query.length ? query : ''}`);
     return responseHandler(response);
   } catch (err) {
-    console.log(err);
+    throw Error(err);
   } 
 };
 
 export const getMatchingDevelopers = async (query) => {
   try {
-    const response = await instance.get(`forms/${DEVELOPER_FORM_ID}/responses?completed=true&query=${query}`);
+    const response = await instance.get(`forms/${env.DEVELOPER_FORM_ID}/responses?completed=true&query=${query}`);
     return responseHandler(response);
   } catch (err) {
-    console.log(err);
+    throw Error(err);
   } 
 };

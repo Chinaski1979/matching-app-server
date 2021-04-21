@@ -5,6 +5,7 @@ import routerV1 from './src/api/router';
 import responseMiddleware from './src/middlewares/responses';
 
 const app = express();
+require('dotenv').config();
 
 app.use(cors());
 app.get('/', (req, res) => {
