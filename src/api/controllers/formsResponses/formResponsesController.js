@@ -1,9 +1,11 @@
 
-import { getDeveloperResponses } from '../../../services/typeformService';
+import { getDeveloperResponses, getClientResponses } from '../../../services/typeformService';
 
 export async function developerResponses(req, res) {
   try {
-    const responses = await getDeveloperResponses();
+    console.log(req.query);
+    validateQuery(req.query);
+    const responses = await getDeveloperResponses(req.query);
     res.ok(responses, 'Successfully retrieved responses');
   } catch(err) {
     res.badRequest(err.message, null, 'Error retreiving responses');
