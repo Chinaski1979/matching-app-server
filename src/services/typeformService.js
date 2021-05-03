@@ -13,13 +13,21 @@ const instance = axios.create({
 const env = process.env;
 
 const queryHandler = (queryParams) => {
-  const { textFilter } = queryParams;
-  const possibleParams = Object.keys(queryParams);
+  const validQueries = ['completed', 'query', 'since', 'until', 'page_size', 'after'];
+  const queryKeys = Object.keys(queryParams);
+  const allValidQuerys = queryKeys.every(queryKey => validQueries.includes(queryKey));
+
+  if (!allValidQuerys) throw Error(`Invalid query. Only valid queries are: ${validQueries}`);
+
   let query = '';
-  
-  if (possibleParams.some(filter => (typeof queryParams[filter] === 'string' || typeof queryParams[filter] === 'number'))) {
-    const text = textFilter ? `&query=${textFilter}` : '';
-    query = `${text}`
+  if (queryKeys.length) {
+    query = '?';
+    queryKeys.forEach((queryKey, i) => {
+      if (validQueries.includes(queryKey)) {
+        const addAndSymbol = i > 0 ? '&' : '';
+        query += `${addAndSymbol}${queryKey}=${queryParams[queryKey]}`
+      }
+    });
   }
   return query;
 };
@@ -27,9 +35,11 @@ const queryHandler = (queryParams) => {
 const responseHandler = (response) => response.data.items.map(item => item.answers);
 
 export const getDeveloperResponses = async (queryParams = {}) => {
+
   try {
-    const query = queryHandler(queryParams);
-    const response = await instance.get(`forms/${env.DEVELOPER_FORM_ID}/responses?completed=true${query.length ? query : ''}`);
+    console.log('queryParams111', queryParams);
+    console.log(`forms/${env.DEVELOPER_FORM_ID}/responses${queryHandler(queryParams)}`);
+    const response = await instance.get(`forms/${env.DEVELOPER_FORM_ID}/responses${queryHandler(queryParams)}`);
     return responseHandler(response);
   } catch (err) {
     throw Error(err);
