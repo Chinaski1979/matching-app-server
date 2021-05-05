@@ -3,8 +3,6 @@ import { getDeveloperResponses, getClientResponses } from '../../../services/typ
 
 export async function developerResponses(req, res) {
   try {
-    console.log(req.query);
-    validateQuery(req.query);
     const responses = await getDeveloperResponses(req.query);
     res.ok(responses, 'Successfully retrieved responses');
   } catch(err) {
